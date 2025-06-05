@@ -2,29 +2,25 @@ import cv2
 import mediapipe as mp
 import pygame
 
-# 🎹 Step 1: Initialize Pygame mixer
 pygame.init()
 pygame.mixer.init()
-
-# 🎶 Step 2: Load simple chord sounds (no effects)
 chords = {
     "index": pygame.mixer.Sound("chords/Em.wav"),   # Index finger
     "middle": pygame.mixer.Sound("chords/d.wav"),   # Middle finger
     "ring": pygame.mixer.Sound("chords/c.wav"),     # Ring finger
 }
 
-# ✋ Step 3: Setup MediaPipe for hand tracking
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(max_num_hands=1)
 mp_draw = mp.solutions.drawing_utils
 
-# 📷 Step 4: Open webcam and handle possible errors
+
 cap = cv2.VideoCapture(0)
 if not cap.isOpened():
     print("Error: Could not open webcam.")
     exit()
 
-# 🖐️ Helper to detect raised fingers
+
 def fingers_up(hand_landmarks):
     """Returns a list of boolean values indicating which fingers are up"""
     return [
@@ -37,7 +33,6 @@ last_played = None  # To avoid repeat play
 
 def process_frame(img):
     """Process and return the processed frame (flipped and with hand landmarks)"""
-    # Convert to RGB for MediaPipe processing
     img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     results = hands.process(img_rgb)
 
@@ -64,7 +59,7 @@ def process_frame(img):
                 return None  # Reset when no fingers are up
     return last_played  # Return previous chord if no new finger is detected
 
-# 🔁 Step 5: Main loop
+# Main loop
 while True:
     success, img = cap.read()
     if not success:
